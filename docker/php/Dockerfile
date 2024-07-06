@@ -1,20 +1,16 @@
-FROM php:8.3-fpm
+FROM php:fpm-buster
+
+COPY ./docker/php/php.ini /usr/local/etx/php/php.ini
 
 RUN apt-get update \
-  && apt-get install -y mariadb-client vim zip unzip \
-  && docker-php-ext-install pdo_mysql
+  && apt-get -y install git zip unzip vim
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
+RUN docker-php-ext-install pdo_mysql
 
-ENV COMPOSER_ALLOW_SUPERUSER 1
+RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
-ENV COMPOSER_HOME /composer
+COPY ./src/. /var/www/html
 
-ENV PATH $PATH:/composer/vendor/bin
+# RUN composer install
 
-WORKDIR /var/www
-
-RUN composer global require "laravel/installer"
+WORKDIR /var/www/html

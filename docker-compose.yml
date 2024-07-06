@@ -1,20 +1,21 @@
 services:
-  app:
-    container_name: app_laravel
-    build: ./docker/php
+  php:
+    container_name: php
+    build:
+      dockerfile: "./docker/php/Dockerfile"
     volumes:
-      - .:/var/www
+      - "./src:/var/www/html"
   nginx:
-    image: nginx
     container_name: nginx
+    build:
+      dockerfile: "./docker/nginx/Dockerfile"
     ports:
-      - 8000:80
+      - "8000:80"
     volumes:
-      - .:/var/www
-      - ./docker/nginx/default.conf:/etx/nginx/conf.d/default.conf
-    working_dir: /var/www
+      - "./src:/var/www/html"
     depends_on:
-      - app
+      - php
+      - db
   db:
     image: mysql:8.0.36
     container_name: db
