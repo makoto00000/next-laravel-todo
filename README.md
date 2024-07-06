@@ -68,7 +68,14 @@ php artisan migrate
 RUN composer install
 ```
 
-### 8. アクセス
+### 8. 再ビルド
+
+```shell
+docker-compose down
+docker-compose up -d --build
+```
+
+### 9. アクセス
 
 - Laravel:
 <http://localhost:8000>
