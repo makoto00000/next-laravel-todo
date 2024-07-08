@@ -4,7 +4,7 @@ services:
     build:
       dockerfile: "./docker/php/Dockerfile"
     volumes:
-      - "./src:/var/www/html"
+      - "./api:/var/www/html"
   nginx:
     container_name: nginx
     build:
@@ -12,7 +12,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - "./src:/var/www/html"
+      - "./api:/var/www/html"
     depends_on:
       - php
       - db
@@ -38,3 +38,15 @@ services:
       PMA_PASSWORD: password
     ports:
     - 8080:80
+  front:
+    container_name: front
+    build: ./front/
+    volumes:
+      - ./front:/front
+    ports:
+      - 3000:3000
+    command: sh -c "npm install && npm run dev"
+    tty: true
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
